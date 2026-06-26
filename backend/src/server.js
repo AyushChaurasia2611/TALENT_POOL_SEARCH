@@ -16,6 +16,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Serve static assets from public folder
+app.use(express.static(path.join(__dirname, '../public')));
+
 // ─── Routes ──────────────────────────────────────────────────────────────────
 app.use('/api', uploadRoutes);
 app.use('/api', candidatesRoutes);
@@ -23,6 +26,11 @@ app.use('/api', candidatesRoutes);
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// For any other request, serve index.html (supports SPA routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // ─── Start ───────────────────────────────────────────────────────────────────
